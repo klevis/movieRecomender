@@ -130,7 +130,7 @@ public class UI {
         });
         topPanel.add(train);
 
-        JLabel genreSize = new JLabel("Train with genres size");
+        JLabel genreSize = new JLabel("Genres size");
         topPanel.add(genreSize);
         SpinnerModel model = new SpinnerNumberModel(FEATURE_SIZE, 10, 150, 5);
         featureField = new JSpinner(model);
