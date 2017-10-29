@@ -1,3 +1,6 @@
+import ramo.klevis.ui.MovieRecommenderUI;
+import ramo.klevis.ui.startcomp.StarRater;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -10,6 +13,12 @@ public class Run {
     public static void main(String[] args) throws Exception {
         setHadoopHomeEnvironmentVariable();
         System.out.println("args = " + args);
+        StarRater starRater = new StarRater(5, 3.61f, 3);
+        starRater.addStarListener(selection -> {
+            // a new number of stars has been selected
+            System.out.println(selection);
+        });
+        new MovieRecommenderUI();
     }
 
 
