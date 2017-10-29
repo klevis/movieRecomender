@@ -1,13 +1,15 @@
 package ramo.klevis.ml;
 
+import java.io.Serializable;
+
 /**
  * Created by klevis.ramo on 10/29/2017.
  */
-public class Movie {
+public class Movie implements Serializable{
     private String id;
     private String title;
     private String genre;
-    private Double rating;
+    private Double rating = 0d;
 
     public Movie(String id, String title, String genre, Double rating) {
         this.id = id;

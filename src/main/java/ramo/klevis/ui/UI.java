@@ -13,6 +13,7 @@ import java.awt.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class UI {
     private RatingsTableModel ratingsTableModel;
     private JTable table;
     private final CollaborationFiltering collaborationFiltering;
+    private SuggestionTableModel suggestionTableModel;
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -65,7 +67,8 @@ public class UI {
         JPanel tablePanel = new JPanel(gridLayout);
         tablePanel.add(new JScrollPane(table));
 
-        tablePanel.add(new JScrollPane(new JTable(new SuggestionTableModel())));
+        suggestionTableModel = new SuggestionTableModel();
+        tablePanel.add(new JScrollPane(new JTable(suggestionTableModel)));
         mainPanel.add(tablePanel, BorderLayout.CENTER);
     }
 
@@ -79,38 +82,48 @@ public class UI {
         jComboBox.addItemListener(e -> {
             int stateChange = e.getStateChange();
             if (stateChange == 1) {
-                String genre = (String) e.getItem();
-                List<Movie> moviesList = prepareData.getMoviesByGenre(genre);
-                ratingsTableModel.restAndAddNewMovies(moviesList);
-                ratingsTableModel.fireTableDataChanged();
-                TableColumn col = table.getColumnModel().getColumn(1);
-                col.setCellEditor(new StarRaterEditor(ratingsTableModel));
-                col.setCellRenderer(new StarRaterRenderer(ratingsTableModel));
+                loadMovieByGenre(e);
             }
-
         });
         topPanel.add(jComboBox);
         JButton reset = new JButton("Reset Ratings");
         reset.addActionListener(e -> {
-            try {
-                prepareData = new PrepareData();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            ratingsTableModel.restAndAddNewMovies(new ArrayList<>());
-            ratingsTableModel.fireTableDataChanged();
+            resetMoviesRate();
         });
         topPanel.add(reset);
+
         JButton train = new JButton("Suggest Movies");
         train.addActionListener(e -> {
             try {
-                collaborationFiltering.train();
+                List<Movie> topTenRated = collaborationFiltering.train(prepareData.getMovies());
+                suggestionTableModel.restAndAddNewMovies(topTenRated);
+                suggestionTableModel.fireTableDataChanged();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
         topPanel.add(train);
         mainPanel.add(topPanel, BorderLayout.NORTH);
+    }
+
+    private void resetMoviesRate() {
+        try {
+            prepareData = new PrepareData();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        ratingsTableModel.restAndAddNewMovies(new ArrayList<>());
+        ratingsTableModel.fireTableDataChanged();
+    }
+
+    private void loadMovieByGenre(ItemEvent e) {
+        String genre = (String) e.getItem();
+        List<Movie> moviesList = prepareData.getMoviesByGenre(genre);
+        ratingsTableModel.restAndAddNewMovies(moviesList);
+        ratingsTableModel.fireTableDataChanged();
+        TableColumn col = table.getColumnModel().getColumn(1);
+        col.setCellEditor(new StarRaterEditor(ratingsTableModel));
+        col.setCellRenderer(new StarRaterRenderer(ratingsTableModel));
     }
 
     private JFrame createMainFrame() {

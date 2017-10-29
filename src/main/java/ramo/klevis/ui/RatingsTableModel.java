@@ -8,7 +8,7 @@ import java.util.List;
 
 public class RatingsTableModel extends AbstractTableModel {
 
-    protected List<Movie> movieList=new ArrayList<>();
+    private List<Movie> movieList=new ArrayList<>();
 
     @Override
     public int getRowCount() {
@@ -65,5 +65,9 @@ public class RatingsTableModel extends AbstractTableModel {
 
     public Movie getMovie(int row) {
        return movieList.get(row);
+    }
+
+    public List<Movie> getMovieList() {
+        return movieList;
     }
 }

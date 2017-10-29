@@ -60,4 +60,8 @@ public class PrepareData {
     public List<Movie> getMoviesByGenre(String genre) {
         return movies.stream().parallel().filter(e -> e.getGenre().equalsIgnoreCase(genre)).collect(Collectors.toList());
     }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
 }
