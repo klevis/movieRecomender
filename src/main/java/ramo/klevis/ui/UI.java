@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by klevis.ramo on 10/29/2017.
  */
-public class MovieRecommenderUI {
+public class UI {
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 400;
 
@@ -28,10 +28,10 @@ public class MovieRecommenderUI {
     private JPanel mainPanel;
     private JProgressBar progressBar;
     private PrepareData prepareData;
-    private MovieRatingsTableModel movieRatingsTableModel;
+    private RatingsTableModel ratingsTableModel;
     private JTable table;
 
-    public MovieRecommenderUI() throws Exception {
+    public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
         UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
@@ -54,13 +54,13 @@ public class MovieRecommenderUI {
     }
 
     private void addMovieTables() {
-        movieRatingsTableModel = new MovieRatingsTableModel();
-        table = new JTable(movieRatingsTableModel);
+        ratingsTableModel = new RatingsTableModel();
+        table = new JTable(ratingsTableModel);
         GridLayout gridLayout = new GridLayout(1, 2);
         JPanel tablePanel = new JPanel(gridLayout);
         tablePanel.add(new JScrollPane(table));
 
-        tablePanel.add(new JScrollPane(new JTable(new MovieSuggestionTableModel())));
+        tablePanel.add(new JScrollPane(new JTable(new SuggestionTableModel())));
         mainPanel.add(tablePanel, BorderLayout.CENTER);
     }
 
@@ -76,11 +76,11 @@ public class MovieRecommenderUI {
             if (stateChange == 1) {
                 String genre = (String) e.getItem();
                 List<Movie> moviesList = prepareData.getMoviesByGenre(genre);
-                movieRatingsTableModel.restAndAddNewMovies(moviesList);
-                movieRatingsTableModel.fireTableDataChanged();
+                ratingsTableModel.restAndAddNewMovies(moviesList);
+                ratingsTableModel.fireTableDataChanged();
                 TableColumn col = table.getColumnModel().getColumn(1);
-                col.setCellEditor(new StarRaterEditor(movieRatingsTableModel));
-                col.setCellRenderer(new StarRaterRenderer(movieRatingsTableModel));
+                col.setCellEditor(new StarRaterEditor(ratingsTableModel));
+                col.setCellRenderer(new StarRaterRenderer(ratingsTableModel));
             }
 
         });
@@ -92,8 +92,8 @@ public class MovieRecommenderUI {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            movieRatingsTableModel.restAndAddNewMovies(new ArrayList<>());
-            movieRatingsTableModel.fireTableDataChanged();
+            ratingsTableModel.restAndAddNewMovies(new ArrayList<>());
+            ratingsTableModel.fireTableDataChanged();
         });
         topPanel.add(reset);
         topPanel.add(new JButton("Suggest Movies"));

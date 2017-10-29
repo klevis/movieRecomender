@@ -1,7 +1,7 @@
 package ramo.klevis.ui.comp;
 
 import ramo.klevis.ml.Movie;
-import ramo.klevis.ui.MovieRatingsTableModel;
+import ramo.klevis.ui.RatingsTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -12,16 +12,16 @@ import java.awt.*;
  */
 public class StarRaterEditor extends AbstractCellEditor implements TableCellEditor {
 
-    private final MovieRatingsTableModel movieRatingsTableModel;
+    private final RatingsTableModel ratingsTableModel;
     private final StarRater starRater;
     private int row;
 
-    public StarRaterEditor(MovieRatingsTableModel movieRatingsTableModel) {
+    public StarRaterEditor(RatingsTableModel ratingsTableModel) {
 
-        this.movieRatingsTableModel = movieRatingsTableModel;
+        this.ratingsTableModel = ratingsTableModel;
         starRater = new StarRater(5);
         starRater.addStarListener(selection -> {
-            movieRatingsTableModel.getMovie(row).setRating(Double.valueOf(selection));
+            ratingsTableModel.getMovie(row).setRating(Double.valueOf(selection));
         });
     }
 
@@ -33,7 +33,7 @@ public class StarRaterEditor extends AbstractCellEditor implements TableCellEdit
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        Movie currentMovie = movieRatingsTableModel.getMovie(row);
+        Movie currentMovie = ratingsTableModel.getMovie(row);
         float rating = starRater.getRating();
         currentMovie.setRating(new Double(rating));
         this.row = row;

@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieSuggestionTableModel extends AbstractTableModel {
+public class SuggestionTableModel extends AbstractTableModel {
 
     protected List<Movie> movieList=new ArrayList<>();
 

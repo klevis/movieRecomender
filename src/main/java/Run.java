@@ -1,4 +1,4 @@
-import ramo.klevis.ui.MovieRecommenderUI;
+import ramo.klevis.ui.UI;
 import ramo.klevis.ui.comp.StarRater;
 
 import java.io.File;
@@ -18,7 +18,7 @@ public class Run {
             // a new number of stars has been selected
             System.out.println(selection);
         });
-        new MovieRecommenderUI();
+        new UI();
     }
 
 
