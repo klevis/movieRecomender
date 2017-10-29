@@ -1,5 +1,6 @@
 package ramo.klevis.ui;
 
+import ramo.klevis.ml.CollaborationFiltering;
 import ramo.klevis.ml.Movie;
 import ramo.klevis.ml.PrepareData;
 import ramo.klevis.ui.comp.StarRaterEditor;
@@ -10,6 +11,8 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -30,6 +33,7 @@ public class UI {
     private PrepareData prepareData;
     private RatingsTableModel ratingsTableModel;
     private JTable table;
+    private final CollaborationFiltering collaborationFiltering;
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -37,6 +41,7 @@ public class UI {
         UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
         prepareData = new PrepareData();
         initUI();
+        collaborationFiltering = new CollaborationFiltering();
     }
 
     private void initUI() throws IOException {
@@ -96,7 +101,15 @@ public class UI {
             ratingsTableModel.fireTableDataChanged();
         });
         topPanel.add(reset);
-        topPanel.add(new JButton("Suggest Movies"));
+        JButton train = new JButton("Suggest Movies");
+        train.addActionListener(e -> {
+            try {
+                collaborationFiltering.train();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        topPanel.add(train);
         mainPanel.add(topPanel, BorderLayout.NORTH);
     }
 
