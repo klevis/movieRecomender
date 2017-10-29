@@ -1,5 +1,5 @@
 import ramo.klevis.ui.MovieRecommenderUI;
-import ramo.klevis.ui.startcomp.StarRater;
+import ramo.klevis.ui.comp.StarRater;
 
 import java.io.File;
 import java.lang.reflect.Field;

@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by klevis.ramo on 10/29/2017.
@@ -20,7 +19,7 @@ public class PrepareData {
         return Files.readAllLines(Paths.get("ml-latest-small/movies.csv"))
                 .stream().parallel().skip(1).map(line -> {
                     String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                    return new Movie(values[0], values[1], values[2]);
+                    return new Movie(values[0], values[1], values[2], 0d);
                 }).collect(Collectors.toList());
     }
 

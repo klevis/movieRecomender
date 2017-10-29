@@ -1,4 +1,4 @@
-package ramo.klevis.ui.startcomp;
+package ramo.klevis.ui.comp;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -204,7 +204,7 @@ public class StarRater extends JPanel {
   }
   
   /**
-   * Paints this startcomp.
+   * Paints this comp.
    * 
    * @param g  Where to paint to.
    */

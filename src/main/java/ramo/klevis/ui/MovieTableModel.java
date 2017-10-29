@@ -21,6 +21,11 @@ public class MovieTableModel extends AbstractTableModel {
     }
 
     @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return true;
+    }
+
+    @Override
     public String getColumnName(int column) {
         String name = "??";
         switch (column) {
@@ -28,34 +33,26 @@ public class MovieTableModel extends AbstractTableModel {
                 name = "Title";
                 break;
             case 1:
-                name = "Genre";
+                name = "Rating";
                 break;
         }
         return name;
     }
 
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        Class type = String.class;
-        switch (columnIndex) {
-            case 0:
-            case 1:
-                type = Integer.class;
-                break;
-        }
-        return type;
+    public Class getColumnClass(int c) {
+        return getValueAt(0, c).getClass();
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Movie click = movieList.get(rowIndex);
+        Movie movie = movieList.get(rowIndex);
         Object value = null;
         switch (columnIndex) {
             case 0:
-                value = click.getTitle();
+                value = movie.getTitle();
                 break;
             case 1:
-                value = click.getGenre();
+                value = movie.getRating();
                 break;
         }
         return value;

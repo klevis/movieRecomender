@@ -7,11 +7,21 @@ public class Movie {
     private String id;
     private String title;
     private String genre;
+    private Double rating;
 
-    public Movie(String id, String title, String genre) {
+    public Movie(String id, String title, String genre, Double rating) {
         this.id = id;
         this.title = title;
         this.genre = genre;
+        this.rating = rating;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     public String getId() {
