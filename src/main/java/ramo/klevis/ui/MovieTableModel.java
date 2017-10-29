@@ -62,4 +62,8 @@ public class MovieTableModel extends AbstractTableModel {
         movieList.clear();
         movieList.addAll(newMovies);
     }
+
+    public Movie getMovie(int row) {
+       return movieList.get(row);
+    }
 }

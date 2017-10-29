@@ -76,8 +76,8 @@ public class MovieRecommenderUI {
                movieTableModel.restAndAddNewMovies(moviesList);
                movieTableModel.fireTableDataChanged();
                TableColumn col = table.getColumnModel().getColumn(1);
-               col.setCellEditor(new StarRaterEditor());
-               col.setCellRenderer(new StarRaterRenderer());
+               col.setCellEditor(new StarRaterEditor(movieTableModel));
+               col.setCellRenderer(new StarRaterRenderer(movieTableModel));
            }
 
        });
