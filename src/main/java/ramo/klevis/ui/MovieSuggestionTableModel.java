@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieTableModel extends AbstractTableModel {
+public class MovieSuggestionTableModel extends AbstractTableModel {
 
     protected List<Movie> movieList=new ArrayList<>();
 
@@ -17,7 +17,7 @@ public class MovieTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -33,6 +33,9 @@ public class MovieTableModel extends AbstractTableModel {
                 name = "Title";
                 break;
             case 1:
+                name = "Genre";
+                break;
+            case 2:
                 name = "Rating";
                 break;
         }
@@ -52,6 +55,9 @@ public class MovieTableModel extends AbstractTableModel {
                 value = movie.getTitle();
                 break;
             case 1:
+                value = movie.getGenre();
+                break;
+            case 2:
                 value = movie.getRating();
                 break;
         }

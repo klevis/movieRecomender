@@ -19,7 +19,7 @@ public class PrepareData {
         return Files.readAllLines(Paths.get("ml-latest-small/movies.csv"))
                 .stream().parallel().skip(1).map(line -> {
                     String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                    return new Movie(values[0], values[1], values[2], 0d);
+                    return new Movie(values[0], values[1].replaceAll("\"", ""), values[2], 0d);
                 }).collect(Collectors.toList());
     }
 
