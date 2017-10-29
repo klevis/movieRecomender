@@ -7,6 +7,7 @@ import ramo.klevis.ui.comp.StarRaterEditor;
 import ramo.klevis.ui.comp.StarRaterRenderer;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -25,8 +26,9 @@ import java.util.List;
  * Created by klevis.ramo on 10/29/2017.
  */
 public class UI {
-    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_WIDTH = 698;
     private static final int FRAME_HEIGHT = 400;
+    private static final int FEATURE_SIZE = 50;
 
     private JFrame mainFrame;
     private JPanel mainPanel;
@@ -36,10 +38,12 @@ public class UI {
     private JTable table;
     private final CollaborationFiltering collaborationFiltering;
     private SuggestionTableModel suggestionTableModel;
+    private JSpinner featureField;
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
+        UIManager.put("Table.font", new FontUIResource(new Font("Dialog", Font.ITALIC, 16)));
         UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
         prepareData = new PrepareData();
         initUI();
@@ -51,9 +55,8 @@ public class UI {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        createProgressBar(mainFrame);
-        addTopPanel();
         addMovieTables();
+        addTopPanel();
         addSignature();
 
         mainFrame.add(mainPanel);
@@ -63,12 +66,25 @@ public class UI {
     private void addMovieTables() {
         ratingsTableModel = new RatingsTableModel();
         table = new JTable(ratingsTableModel);
+        table.setRowHeight(20);
         GridLayout gridLayout = new GridLayout(1, 2);
         JPanel tablePanel = new JPanel(gridLayout);
-        tablePanel.add(new JScrollPane(table));
+
+        JScrollPane ratingScrollPane = new JScrollPane(table);
+        ratingScrollPane.setBorder(BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
+                "Tell the Algorithm What you like",
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
+        tablePanel.add(ratingScrollPane);
 
         suggestionTableModel = new SuggestionTableModel();
-        tablePanel.add(new JScrollPane(new JTable(suggestionTableModel)));
+        JScrollPane suggestedScrollPane = new JScrollPane(new JTable(suggestionTableModel));
+        suggestedScrollPane.setBorder(BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
+                "Suggested Movies by Algorithm",
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
+        tablePanel.add(ratingScrollPane);
+        tablePanel.add(suggestedScrollPane);
         mainPanel.add(tablePanel, BorderLayout.CENTER);
     }
 
@@ -86,6 +102,8 @@ public class UI {
             }
         });
         topPanel.add(jComboBox);
+        jComboBox.setSelectedIndex(1);
+        jComboBox.setSelectedIndex(0);
         JButton reset = new JButton("Reset Ratings");
         reset.addActionListener(e -> {
             resetMoviesRate();
@@ -94,15 +112,29 @@ public class UI {
 
         JButton train = new JButton("Suggest Movies");
         train.addActionListener(e -> {
-            try {
-                List<Movie> topTenRated = collaborationFiltering.train(prepareData.getMovies());
-                suggestionTableModel.restAndAddNewMovies(topTenRated);
-                suggestionTableModel.fireTableDataChanged();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            showProgressBar();
+            Runnable runnable = () -> {
+                try {
+                    List<Movie> topTenRated = collaborationFiltering.train(prepareData.getMovies(), (Integer) featureField.getValue());
+                    suggestionTableModel.restAndAddNewMovies(topTenRated);
+                    suggestionTableModel.fireTableDataChanged();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }finally {
+                    progressBar.setVisible(false);
+                }
+            };
+            Thread thread = new Thread(runnable);
+            thread.setDaemon(true);
+            thread.start();
         });
         topPanel.add(train);
+
+        JLabel genreSize = new JLabel("Train with genres size");
+        topPanel.add(genreSize);
+        SpinnerModel model = new SpinnerNumberModel(FEATURE_SIZE, 10, 150, 5);
+        featureField = new JSpinner(model);
+        topPanel.add(featureField);
         mainPanel.add(topPanel, BorderLayout.NORTH);
     }
 
@@ -128,9 +160,9 @@ public class UI {
 
     private JFrame createMainFrame() {
         JFrame mainFrame = new JFrame();
-        mainFrame.setTitle("Email Spam Detector");
+        mainFrame.setTitle("Movie Recommender");
         mainFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        mainFrame.setSize(FRAME_WIDTH,FRAME_HEIGHT);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
@@ -152,7 +184,6 @@ public class UI {
             progressBar.setStringPainted(true);
             progressBar.setIndeterminate(true);
             progressBar.setVisible(true);
-            mainPanel.add(progressBar, BorderLayout.NORTH);
             mainFrame.repaint();
         });
     }

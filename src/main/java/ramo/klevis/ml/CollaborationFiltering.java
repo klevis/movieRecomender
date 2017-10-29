@@ -27,7 +27,7 @@ public class CollaborationFiltering {
     private static final int CURRENT_USER_ID = 9999999;
     private JavaSparkContext sparkContext;
 
-    public List<Movie> train(List<Movie> currentMovies) throws IOException {
+    public List<Movie> train(List<Movie> currentMovies, int featureSize) throws IOException {
         if (sparkContext == null) {
             sparkContext = createSparkContext();
         }
@@ -39,7 +39,7 @@ public class CollaborationFiltering {
 
         JavaRDD<Rating> ratings = sparkContext.parallelize(ratingsList);
         int rank = 50;
-        int numIterations = 10;
+        int numIterations = featureSize;
         MatrixFactorizationModel model = ALS.train(JavaRDD.toRDD(ratings), rank, numIterations, 0.01);
 
         JavaRDD<Tuple2<Object, Object>> userProducts =
@@ -69,7 +69,8 @@ public class CollaborationFiltering {
         List<Movie> topTen = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
 
-            Movie movie = notRatedMoviesMap.get(""+predicted.get(i).product());
+            Movie movie = notRatedMoviesMap.get("" + predicted.get(i).product());
+            movie.setRating(predicted.get(i).rating());
             topTen.add(movie);
         }
 
