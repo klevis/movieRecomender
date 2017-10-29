@@ -10,9 +10,12 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +29,7 @@ public class MovieRecommenderUI {
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JProgressBar progressBar;
-    private final PrepareData prepareData ;
+    private PrepareData prepareData;
     private MovieTableModel movieTableModel;
     private JTable table;
 
@@ -68,22 +71,33 @@ public class MovieRecommenderUI {
         JComboBox<String> jComboBox = new JComboBox<>();
         Collection<String> allGenres = prepareData.getAllGenres();
         allGenres.stream().forEach(e -> jComboBox.addItem(e));
-       jComboBox.addItemListener(e -> {
-           int stateChange = e.getStateChange();
-           if (stateChange == 1) {
-               String genre = (String) e.getItem();
-               List<Movie> moviesList=prepareData.getMoviesByGenre(genre);
-               movieTableModel.restAndAddNewMovies(moviesList);
-               movieTableModel.fireTableDataChanged();
-               TableColumn col = table.getColumnModel().getColumn(1);
-               col.setCellEditor(new StarRaterEditor(movieTableModel));
-               col.setCellRenderer(new StarRaterRenderer(movieTableModel));
-           }
+        jComboBox.addItemListener(e -> {
+            int stateChange = e.getStateChange();
+            if (stateChange == 1) {
+                String genre = (String) e.getItem();
+                List<Movie> moviesList = prepareData.getMoviesByGenre(genre);
+                movieTableModel.restAndAddNewMovies(moviesList);
+                movieTableModel.fireTableDataChanged();
+                TableColumn col = table.getColumnModel().getColumn(1);
+                col.setCellEditor(new StarRaterEditor(movieTableModel));
+                col.setCellRenderer(new StarRaterRenderer(movieTableModel));
+            }
 
-       });
+        });
         topPanel.add(jComboBox);
-        topPanel.add(new JButton("Suggest Me Movies"));
-        mainPanel.add(topPanel,BorderLayout.NORTH);
+        JButton reset = new JButton("Reset Ratings");
+        reset.addActionListener(e -> {
+            try {
+                prepareData = new PrepareData();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            movieTableModel.restAndAddNewMovies(new ArrayList<>());
+            movieTableModel.fireTableDataChanged();
+        });
+        topPanel.add(reset);
+        topPanel.add(new JButton("Suggest Movies"));
+        mainPanel.add(topPanel, BorderLayout.NORTH);
     }
 
     private JFrame createMainFrame() {
