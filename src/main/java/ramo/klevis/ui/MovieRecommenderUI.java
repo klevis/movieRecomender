@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class MovieRecommenderUI {
     private JPanel mainPanel;
     private JProgressBar progressBar;
     private final PrepareData prepareData ;
+    private MovieTableModel dm;
 
     public MovieRecommenderUI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -40,6 +42,14 @@ public class MovieRecommenderUI {
 
         createProgressBar(mainFrame);
         addTopPanel();
+
+        dm = new MovieTableModel();
+        JTable table = new JTable(dm);
+        GridLayout gridLayout = new GridLayout(1, 2);
+        JPanel tablePanel = new JPanel(gridLayout);
+        tablePanel.add(new JScrollPane(table));
+        mainPanel.add(tablePanel, BorderLayout.CENTER);
+
         addSignature();
 
         mainFrame.add(mainPanel);
@@ -58,7 +68,8 @@ public class MovieRecommenderUI {
            if (stateChange == 1) {
                String genre = (String) e.getItem();
                List<Movie> moviesList=prepareData.getMoviesByGenre(genre);
-
+               dm.restAndAddNewMovies(moviesList);
+               dm.fireTableDataChanged();
            }
 
        });
