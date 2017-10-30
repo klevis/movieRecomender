@@ -130,7 +130,7 @@ public class UI {
                     suggestionTableModel.fireTableDataChanged();
                     setPanelTitle(suggestedScrollPane, "Suggested Movies, Error Prediction " + collaborationFiltering.getMse());
                     suggestedScrollPane.updateUI();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 } finally {
                     progressBar.setVisible(false);
@@ -155,7 +155,7 @@ public class UI {
     private void resetMoviesRate() {
         try {
             prepareData = new PrepareData();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         ratingsTableModel.restAndAddNewMovies(new ArrayList<>());

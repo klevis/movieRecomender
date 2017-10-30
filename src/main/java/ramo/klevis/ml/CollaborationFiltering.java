@@ -28,7 +28,7 @@ public class CollaborationFiltering {
     private JavaSparkContext sparkContext;
     private double mse;
 
-    public List<Movie> train(List<Movie> currentMovies, int featureSize) throws IOException {
+    public List<Movie> train(List<Movie> currentMovies, int featureSize) throws Exception {
         if (sparkContext == null) {
             sparkContext = createSparkContext();
         }
