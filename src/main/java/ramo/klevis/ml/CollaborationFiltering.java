@@ -38,8 +38,8 @@ public class CollaborationFiltering {
         ratingsList.addAll(ratedByCurrentUser);
 
         JavaRDD<Rating> ratings = sparkContext.parallelize(ratingsList);
-        int rank = 50;
-        int numIterations = featureSize;
+        int rank = featureSize;
+        int numIterations = 10;
         MatrixFactorizationModel model = ALS.train(JavaRDD.toRDD(ratings), rank, numIterations, 0.01);
 
         JavaRDD<Tuple2<Object, Object>> userProducts =

@@ -43,7 +43,7 @@ public class UI {
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
-        UIManager.put("Table.font", new FontUIResource(new Font("Dialog", Font.ITALIC, 16)));
+        UIManager.put("Table.font", new FontUIResource(new Font("Dialog", Font.ITALIC, 14)));
         UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
         prepareData = new PrepareData();
         initUI();
@@ -67,7 +67,7 @@ public class UI {
         ratingsTableModel = new RatingsTableModel();
         table = new JTable(ratingsTableModel);
         table.getTableHeader().setFont(sansSerifBold);
-        table.setRowHeight(20);
+        table.getColumnModel().getColumn(0).setPreferredWidth(190);
         GridLayout gridLayout = new GridLayout(1, 2);
         JPanel tablePanel = new JPanel(gridLayout);
 
@@ -80,12 +80,13 @@ public class UI {
 
         suggestionTableModel = new SuggestionTableModel();
         JTable suggestedTable = new JTable(suggestionTableModel);
+        suggestedTable.getColumnModel().getColumn(2).setPreferredWidth(25);
         suggestedTable.getTableHeader().setFont(sansSerifBold);
         JScrollPane suggestedScrollPane = new JScrollPane(suggestedTable);
         suggestedScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Suggested Movies by Algorithm",
                 TitledBorder.CENTER,
-                TitledBorder.TOP, sansSerifItalic, Color.MAGENTA));
+                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
         tablePanel.add(ratingScrollPane);
         tablePanel.add(suggestedScrollPane);
         mainPanel.add(tablePanel, BorderLayout.CENTER);
@@ -178,7 +179,7 @@ public class UI {
                 System.exit(0);
             }
         });
-        ImageIcon imageIcon = new ImageIcon("spam.png");
+        ImageIcon imageIcon = new ImageIcon("video.png");
         mainFrame.setIconImage(imageIcon.getImage());
 
         return mainFrame;

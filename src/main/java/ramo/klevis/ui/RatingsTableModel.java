@@ -22,6 +22,9 @@ public class RatingsTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
+        if (columnIndex == 0) {
+            return false;
+        }
         return true;
     }
 
