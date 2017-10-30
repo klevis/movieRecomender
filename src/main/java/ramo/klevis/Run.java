@@ -1,3 +1,5 @@
+package ramo.klevis;
+
 import ramo.klevis.ui.UI;
 import ramo.klevis.ui.comp.StarRater;
 
