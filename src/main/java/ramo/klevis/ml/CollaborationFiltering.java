@@ -67,7 +67,7 @@ public class CollaborationFiltering {
         Map<String, Movie> notRatedMoviesMap = notRatedMovies.stream().parallel().collect(Collectors.toMap(Movie::getId, movie -> movie));
 
         List<Movie> topTen = new ArrayList<>();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 30 && !predicted.isEmpty(); i++) {
 
             Movie movie = notRatedMoviesMap.get("" + predicted.get(i).product());
             movie.setRating(predicted.get(i).rating());

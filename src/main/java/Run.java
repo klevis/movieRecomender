@@ -11,13 +11,7 @@ import java.util.Map;
  */
 public class Run {
     public static void main(String[] args) throws Exception {
-        setHadoopHomeEnvironmentVariable();
-        System.out.println("args = " + args);
-        StarRater starRater = new StarRater(5, 3.61f, 3);
-        starRater.addStarListener(selection -> {
-            // a new number of stars has been selected
-            System.out.println(selection);
-        });
+//        setHadoopHomeEnvironmentVariable();
         new UI();
     }
 
