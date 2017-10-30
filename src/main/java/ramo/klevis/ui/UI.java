@@ -39,6 +39,7 @@ public class UI {
     private JSpinner featureField;
     private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 14);
     private final Font sansSerifItalic = new Font("SansSerif", Font.ITALIC, 13);
+    private JScrollPane suggestedScrollPane;
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -72,24 +73,26 @@ public class UI {
         JPanel tablePanel = new JPanel(gridLayout);
 
         JScrollPane ratingScrollPane = new JScrollPane(table);
-        ratingScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                "Tell the Algorithm What you like",
-                TitledBorder.CENTER,
-                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
+        setPanelTitle(ratingScrollPane, "Tell the Algorithm What you like");
         tablePanel.add(ratingScrollPane);
 
         suggestionTableModel = new SuggestionTableModel();
         JTable suggestedTable = new JTable(suggestionTableModel);
         suggestedTable.getColumnModel().getColumn(2).setPreferredWidth(25);
         suggestedTable.getTableHeader().setFont(sansSerifBold);
-        JScrollPane suggestedScrollPane = new JScrollPane(suggestedTable);
-        suggestedScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                "Suggested Movies by Algorithm",
-                TitledBorder.CENTER,
-                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
+        suggestedScrollPane = new JScrollPane(suggestedTable);
+        String title = "Suggested Movies by Algorithm";
+        setPanelTitle(suggestedScrollPane, title);
         tablePanel.add(ratingScrollPane);
         tablePanel.add(suggestedScrollPane);
         mainPanel.add(tablePanel, BorderLayout.CENTER);
+    }
+
+    private void setPanelTitle(JScrollPane suggestedScrollPane, String title) {
+        suggestedScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                title,
+                TitledBorder.CENTER,
+                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
     }
 
     private void addTopPanel() throws IOException {
@@ -125,6 +128,8 @@ public class UI {
                     List<Movie> topTenRated = collaborationFiltering.train(prepareData.getMovies(), (Integer) featureField.getValue());
                     suggestionTableModel.restAndAddNewMovies(topTenRated);
                     suggestionTableModel.fireTableDataChanged();
+                    setPanelTitle(suggestedScrollPane, "Suggested Movies, Error Prediction " + collaborationFiltering.getMse());
+                    suggestedScrollPane.updateUI();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 } finally {

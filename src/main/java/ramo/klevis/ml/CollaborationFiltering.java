@@ -26,6 +26,7 @@ public class CollaborationFiltering {
 
     private static final int CURRENT_USER_ID = 9999999;
     private JavaSparkContext sparkContext;
+    private double mse;
 
     public List<Movie> train(List<Movie> currentMovies, int featureSize) throws IOException {
         if (sparkContext == null) {
@@ -53,11 +54,11 @@ public class CollaborationFiltering {
         JavaRDD<Tuple2<Double, Double>> ratesAndPreds = JavaPairRDD.fromJavaRDD(
                 ratings.map(r -> new Tuple2<>(new Tuple2<>(r.user(), r.product()), r.rating())))
                 .join(predictions).values();
-        double MSE = ratesAndPreds.mapToDouble(pair -> {
+        mse = ratesAndPreds.mapToDouble(pair -> {
             double err = pair._1() - pair._2();
             return err * err;
         }).mean();
-        System.out.println("Mean Squared Error = " + MSE);
+        System.out.println("Mean Squared Error = " + mse);
 
         List<Movie> notRatedMovies = currentMovies.stream().parallel().filter(e -> e.getRating() == 0d).collect(Collectors.toList());
 
@@ -81,6 +82,10 @@ public class CollaborationFiltering {
     private JavaSparkContext createSparkContext() {
         SparkConf conf = new SparkConf().setAppName("Movie Recomender").setMaster("local[*]");
         return new JavaSparkContext(conf);
+    }
+
+    public double getMse() {
+        return mse;
     }
 
 }
