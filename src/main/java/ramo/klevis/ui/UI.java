@@ -12,8 +12,6 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -39,6 +37,8 @@ public class UI {
     private final CollaborationFiltering collaborationFiltering;
     private SuggestionTableModel suggestionTableModel;
     private JSpinner featureField;
+    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 14);
+    private final Font sansSerifItalic = new Font("SansSerif", Font.ITALIC, 13);
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -66,23 +66,26 @@ public class UI {
     private void addMovieTables() {
         ratingsTableModel = new RatingsTableModel();
         table = new JTable(ratingsTableModel);
+        table.getTableHeader().setFont(sansSerifBold);
         table.setRowHeight(20);
         GridLayout gridLayout = new GridLayout(1, 2);
         JPanel tablePanel = new JPanel(gridLayout);
 
         JScrollPane ratingScrollPane = new JScrollPane(table);
-        ratingScrollPane.setBorder(BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
+        ratingScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Tell the Algorithm What you like",
                 TitledBorder.CENTER,
-                TitledBorder.TOP));
+                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
         tablePanel.add(ratingScrollPane);
 
         suggestionTableModel = new SuggestionTableModel();
-        JScrollPane suggestedScrollPane = new JScrollPane(new JTable(suggestionTableModel));
-        suggestedScrollPane.setBorder(BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
+        JTable suggestedTable = new JTable(suggestionTableModel);
+        suggestedTable.getTableHeader().setFont(sansSerifBold);
+        JScrollPane suggestedScrollPane = new JScrollPane(suggestedTable);
+        suggestedScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Suggested Movies by Algorithm",
                 TitledBorder.CENTER,
-                TitledBorder.TOP));
+                TitledBorder.TOP, sansSerifItalic, Color.MAGENTA));
         tablePanel.add(ratingScrollPane);
         tablePanel.add(suggestedScrollPane);
         mainPanel.add(tablePanel, BorderLayout.CENTER);
@@ -91,7 +94,9 @@ public class UI {
     private void addTopPanel() throws IOException {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(new JLabel("Genres"));
+        JLabel genres = new JLabel("Genres");
+        genres.setFont(sansSerifBold);
+        topPanel.add(genres);
         JComboBox<String> jComboBox = new JComboBox<>();
         Collection<String> allGenres = prepareData.getAllGenres();
         allGenres.stream().forEach(e -> jComboBox.addItem(e));
@@ -101,6 +106,7 @@ public class UI {
                 loadMovieByGenre(e);
             }
         });
+        jComboBox.setFont(sansSerifBold);
         topPanel.add(jComboBox);
         jComboBox.setSelectedIndex(1);
         jComboBox.setSelectedIndex(0);
@@ -120,7 +126,7 @@ public class UI {
                     suggestionTableModel.fireTableDataChanged();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
-                }finally {
+                } finally {
                     progressBar.setVisible(false);
                 }
             };
@@ -131,9 +137,11 @@ public class UI {
         topPanel.add(train);
 
         JLabel genreSize = new JLabel("Genres size");
+        genreSize.setFont(sansSerifBold);
         topPanel.add(genreSize);
         SpinnerModel model = new SpinnerNumberModel(FEATURE_SIZE, 10, 150, 5);
         featureField = new JSpinner(model);
+        featureField.setFont(sansSerifBold);
         topPanel.add(featureField);
         mainPanel.add(topPanel, BorderLayout.NORTH);
     }
@@ -162,7 +170,7 @@ public class UI {
         JFrame mainFrame = new JFrame();
         mainFrame.setTitle("Movie Recommender");
         mainFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        mainFrame.setSize(FRAME_WIDTH,FRAME_HEIGHT);
+        mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
