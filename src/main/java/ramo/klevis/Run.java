@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class Run {
     public static void main(String[] args) throws Exception {
-//        setHadoopHomeEnvironmentVariable();
+        setHadoopHomeEnvironmentVariable();
         new UI();
     }
 
